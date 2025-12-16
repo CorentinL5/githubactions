@@ -1,39 +1,64 @@
-name: Exo Variables
+name: Démonstration complète des variables
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
+  workflow_dispatch:
+    inputs:
+      couleur:
+        description: "Couleur initiale"
+        required: true
+        default: "jaune"
 
+# 1️⃣ Variables globales du workflow
 env:
-  APP_NAME: "mon-application"
-  NODE_VERSION: "20"
+  MA_VARIABLE_PRENOM: "Alice"
+  MA_VARIABLE_NOM: "Bob"
+  MA_VARIABLE_MULTILIGNE: |
+    Bonjour
+    à tous
+    !
 
 jobs:
-  build:
+  demo:
     runs-on: ubuntu-latest
 
+    # 2️⃣ Variables au niveau du job
     env:
-      ENVIRONMENT: "production"
+      COULEUR: "jaune"
 
     steps:
-      - name: Checkout du dépôt
-        uses: actions/checkout@v4
-
-      - name: Utiliser la version de Node.js définie
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-
-      - name: Afficher les variables
+      # 3️⃣ Utilisation simple des variables
+      - name: Afficher les variables globales
         run: |
-          echo "Application: $APP_NAME"
-          echo "Environnement: $ENVIRONMENT"
-          echo "Node version: $NODE_VERSION"
+          echo "Prénom : $MA_VARIABLE_PRENOM"
+          echo "Nom : $MA_VARIABLE_NOM"
+          echo "Message multilignes :"
+          echo "$MA_VARIABLE_MULTILIGNE"
 
-      - name: Exemple avec un secret
+      # 4️⃣ Utilisation via syntaxe GitHub Expression
+      - name: Utilisation avec ${{ env.VARIABLE }}
+        run: echo "Bonjour ${{ env.MA_VARIABLE_PRENOM }}"
+
+      # 5️⃣ Variable dynamique (modification en cours de workflow)
+      - name: Modifier dynamiquement une variable
         run: |
-          echo "Le token est défini (mais pas affiché)"
-        env:
-          API_TOKEN: ${{ secrets.API_TOKEN }}
+          echo "COULEUR=vert" >> $GITHUB_ENV
+          echo "Couleur modifiée dans ce step"
+
+      - name: Vérifier la variable dynamique
+        run: echo "Couleur actuelle : $COULEUR"
+
+      # 6️⃣ Variable de sortie (step output)
+      - name: Définir une variable de sortie
+        id: monStep
+        run: |
+          echo "NOMVARIABLE=hello" >> $GITHUB_OUTPUT
+
+      - name: Utiliser la variable de sortie
+        run: echo "Valeur de sortie : ${{ steps.monStep.outputs.NOMVARIABLE }}"
+
+      # 7️⃣ Variables d’environnement prédéfinies GitHub
+      - name: Variables GitHub prédéfinies
+        run: |
+          echo "Repository : $GITHUB_REPOSITORY"
+          echo "Utilisateur : $GITHUB_ACTOR"
+          echo "Commit SHA : $GITHUB_SHA"
