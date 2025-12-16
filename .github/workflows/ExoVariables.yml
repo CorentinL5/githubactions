@@ -41,6 +41,7 @@ jobs:
 
       - name: Vérifier la variable dynamique
         run: |
+          echo "Couleur avant modification : ${{ inputs.couleur }}"
           echo "Couleur après modification : $COULEUR"
 
       - name: Définir une variable de sortie
