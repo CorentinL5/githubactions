@@ -1,0 +1,39 @@
+name: Exo Variables
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+env:
+  APP_NAME: "mon-application"
+  NODE_VERSION: "20"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+      ENVIRONMENT: "production"
+
+    steps:
+      - name: Checkout du dépôt
+        uses: actions/checkout@v4
+
+      - name: Utiliser la version de Node.js définie
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Afficher les variables
+        run: |
+          echo "Application: $APP_NAME"
+          echo "Environnement: $ENVIRONMENT"
+          echo "Node version: $NODE_VERSION"
+
+      - name: Exemple avec un secret
+        run: |
+          echo "Le token est défini (mais pas affiché)"
+        env:
+          API_TOKEN: ${{ secrets.API_TOKEN }}
