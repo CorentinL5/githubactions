@@ -1,6 +1,5 @@
-name: Démo variables – déclenchement manuel
+name: Exercice Variables - Manuel
 
-# 🔘 Déclenchement par bouton uniquement
 on:
   workflow_dispatch:
     inputs:
@@ -9,7 +8,6 @@ on:
         required: true
         default: "jaune"
 
-# Variables globales
 env:
   MA_VARIABLE_PRENOM: "Alice"
   MA_VARIABLE_NOM: "Bob"
@@ -22,7 +20,6 @@ jobs:
   demo:
     runs-on: ubuntu-latest
 
-    # Variable de job basée sur l’input utilisateur
     env:
       COULEUR: ${{ inputs.couleur }}
 
@@ -31,12 +28,12 @@ jobs:
         run: |
           echo "Prénom : $MA_VARIABLE_PRENOM"
           echo "Nom : $MA_VARIABLE_NOM"
+          echo "Message multilignes :"
           echo "$MA_VARIABLE_MULTILIGNE"
 
-      - name: Variable issue du bouton (input)
+      - name: Variable issue du bouton
         run: echo "Couleur initiale : $COULEUR"
 
-      # Variable dynamique
       - name: Modifier dynamiquement la variable
         run: |
           echo "COULEUR=vert" >> $GITHUB_ENV
@@ -44,17 +41,16 @@ jobs:
       - name: Vérifier la variable dynamique
         run: echo "Couleur après modification : $COULEUR"
 
-      # Variable de sortie
       - name: Définir une variable de sortie
         id: monStep
-        run: echo "RESULTAT=succès" >> $GITHUB_OUTPUT
+        run: |
+          echo "RESULTAT=succès" >> $GITHUB_OUTPUT
 
       - name: Utiliser la variable de sortie
         run: echo "Résultat : ${{ steps.monStep.outputs.RESULTAT }}"
 
-      # Variables GitHub prédéfinies
       - name: Variables GitHub prédéfinies
         run: |
-          echo "Repo : $GITHUB_REPOSITORY"
+          echo "Repository : $GITHUB_REPOSITORY"
           echo "Utilisateur : $GITHUB_ACTOR"
-          echo "Commit : $GITHUB_SHA"
+          echo "Commit SHA : $GITHUB_SHA"
