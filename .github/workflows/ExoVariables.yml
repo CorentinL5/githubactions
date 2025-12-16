@@ -32,14 +32,16 @@ jobs:
           echo "$MA_VARIABLE_MULTILIGNE"
 
       - name: Variable issue du bouton
-        run: echo "Couleur initiale : $COULEUR"
+        run: |
+          echo "Couleur initiale : $COULEUR"
 
       - name: Modifier dynamiquement la variable
         run: |
           echo "COULEUR=vert" >> $GITHUB_ENV
 
       - name: Vérifier la variable dynamique
-        run: echo "Couleur après modification : $COULEUR"
+        run: |
+          echo "Couleur après modification : $COULEUR"
 
       - name: Définir une variable de sortie
         id: monStep
@@ -47,7 +49,8 @@ jobs:
           echo "RESULTAT=succès" >> $GITHUB_OUTPUT
 
       - name: Utiliser la variable de sortie
-        run: echo "Résultat : ${{ steps.monStep.outputs.RESULTAT }}"
+        run: |
+          echo "Résultat : ${{ steps.monStep.outputs.RESULTAT }}"
 
       - name: Variables GitHub prédéfinies
         run: |
