@@ -1,5 +1,6 @@
-name: Démonstration complète des variables
+name: Démo variables – déclenchement manuel
 
+# 🔘 Déclenchement par bouton uniquement
 on:
   workflow_dispatch:
     inputs:
@@ -8,7 +9,7 @@ on:
         required: true
         default: "jaune"
 
-# 1️⃣ Variables globales du workflow
+# Variables globales
 env:
   MA_VARIABLE_PRENOM: "Alice"
   MA_VARIABLE_NOM: "Bob"
@@ -21,44 +22,39 @@ jobs:
   demo:
     runs-on: ubuntu-latest
 
-    # 2️⃣ Variables au niveau du job
+    # Variable de job basée sur l’input utilisateur
     env:
-      COULEUR: "jaune"
+      COULEUR: ${{ inputs.couleur }}
 
     steps:
-      # 3️⃣ Utilisation simple des variables
       - name: Afficher les variables globales
         run: |
           echo "Prénom : $MA_VARIABLE_PRENOM"
           echo "Nom : $MA_VARIABLE_NOM"
-          echo "Message multilignes :"
           echo "$MA_VARIABLE_MULTILIGNE"
 
-      # 4️⃣ Utilisation via syntaxe GitHub Expression
-      - name: Utilisation avec ${{ env.VARIABLE }}
-        run: echo "Bonjour ${{ env.MA_VARIABLE_PRENOM }}"
+      - name: Variable issue du bouton (input)
+        run: echo "Couleur initiale : $COULEUR"
 
-      # 5️⃣ Variable dynamique (modification en cours de workflow)
-      - name: Modifier dynamiquement une variable
+      # Variable dynamique
+      - name: Modifier dynamiquement la variable
         run: |
           echo "COULEUR=vert" >> $GITHUB_ENV
-          echo "Couleur modifiée dans ce step"
 
       - name: Vérifier la variable dynamique
-        run: echo "Couleur actuelle : $COULEUR"
+        run: echo "Couleur après modification : $COULEUR"
 
-      # 6️⃣ Variable de sortie (step output)
+      # Variable de sortie
       - name: Définir une variable de sortie
         id: monStep
-        run: |
-          echo "NOMVARIABLE=hello" >> $GITHUB_OUTPUT
+        run: echo "RESULTAT=succès" >> $GITHUB_OUTPUT
 
       - name: Utiliser la variable de sortie
-        run: echo "Valeur de sortie : ${{ steps.monStep.outputs.NOMVARIABLE }}"
+        run: echo "Résultat : ${{ steps.monStep.outputs.RESULTAT }}"
 
-      # 7️⃣ Variables d’environnement prédéfinies GitHub
+      # Variables GitHub prédéfinies
       - name: Variables GitHub prédéfinies
         run: |
-          echo "Repository : $GITHUB_REPOSITORY"
+          echo "Repo : $GITHUB_REPOSITORY"
           echo "Utilisateur : $GITHUB_ACTOR"
-          echo "Commit SHA : $GITHUB_SHA"
+          echo "Commit : $GITHUB_SHA"
